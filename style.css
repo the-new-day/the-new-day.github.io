@@ -1,0 +1,68 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #e8e8e8;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    padding: 50px 150px;
+}
+
+.main-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+textarea {
+    resize: none;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d6d4d4;
+    border-radius: 6px;
+    font-family: monospace;
+}
+
+textarea:focus {
+    outline: 1px solid #228a9c;
+}
+
+.forms .textarea-container {
+    height: 300px;
+    width: calc(50% - 15px);
+    position: relative;
+}
+
+.forms textarea {
+    height: 300px;
+}
+
+.forms {
+    display: flex;
+    justify-content: space-between;
+}
+
+.textarea-copy {
+    border: none;
+    padding: 5px 10px;
+    background: #228a9c;
+    color: white;
+    border-radius: 0 6px;
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.textarea-copy:hover {
+    background: #2bb6cf;
+}
+
+.textarea-copy:active {
+    background: #64ccf5;
+}
+  
