@@ -1,0 +1,81 @@
+/* ИДИ ОТСЮДА */
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#bgVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    height: 100%;
+}
+
+body {
+    font-family: 'Courier New', sans-serif;
+}
+
+.main-header {
+    font-size: 30px;
+    text-align: center;
+}
+
+.main-header h1 {
+    font-size: 60px;
+}
+
+.color-red {
+    color: red;
+}
+
+.color-blue {
+    color: blue;
+}
+
+.color-green {
+    color: green;
+}
+
+.container {
+    padding: 40px 120px;
+}
+
+.main-info__list-item {
+    list-style-type: none;
+    padding: 5px 0;
+}
+
+.main-info__list {
+    font-size: 18px;
+}
+
+.main-info__gallery {
+    margin-top: 40px;
+}
+
+.gallery {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.gallery__item {
+    width: 400px;
+}
+
+.main-info__gallery .gallery {
+    margin-top: 30px;
+}
+
+.gallery__item img {
+    width: 100%;
+}
+
+.donations {
+    text-align: center;
+    font-size: 28px;
+    margin-top: 40px;
+}
