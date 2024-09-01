@@ -1,0 +1,157 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ProTanki Referral</title>
+    <style>
+
+		body{
+			overflow: hidden;
+		}
+
+		.user-info, .invite-block {
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .canvas-wrap {
+            display: flex;
+			cursor: pointer;
+			user-select: none;
+        }
+
+        .panel {
+            position: relative;
+            z-index: 1;
+			user-select: none;
+        }
+
+        .obj {
+            position: absolute;
+            z-index: -1;
+            top: 9px;
+			user-select: none;
+        }
+
+        .container {
+            position: absolute;
+            z-index: 1;
+			user-select: none;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, Helvetica, sans-serif;
+            position: relative;
+            color: white;
+            margin-left: 560px;
+			margin-top: 10px;
+			width: 350px;
+			user-select: none;
+        }
+		
+		.error-block{
+			display: none;
+            flex-direction: column;
+			justify-content: center; 
+            align-items: center; 
+            font-family: Arial, Helvetica, sans-serif;
+            position: relative;
+            color: white;
+            margin-left: 560px;
+			margin-top: 10px;
+			width: 350px;
+			height: 220px;
+			color: #a20000;
+			user-select: none;
+		
+		}
+		
+		.invite-block{
+			display: flex;
+            flex-direction: column;
+			justify-content: center; 
+            align-items: center; 
+            font-family: Arial, Helvetica, sans-serif;
+            position: relative;
+            color: white;
+            margin-left: 560px;
+			margin-top: 10px;
+			width: 350px;
+			height: 220px;
+			user-select: none;
+			font-size:40px;
+		}
+
+		.invite-block p {
+            margin: 0 0;
+            position: relative;
+			user-select: none;
+        }
+		
+		.error-block p {
+            margin: 0 0;
+            position: relative;
+			user-select: none;
+        }
+		
+		.invite-text{
+			width:200px;
+			font-size: 30px;
+			user-select: none;
+		}
+		.error-text{
+			width:200px;
+			font-size: 30px;
+			user-select: none;
+		}
+
+        .user-info p {
+            margin: 0 0;
+            position: relative;
+			user-select: none;
+        }
+
+		.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .visible {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js",
+                "TDSLoader": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/loaders/TDSLoader.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="canvas-wrap" id="banner">
+        <div class="container">
+            <div class="user-info">
+                <span><p class="rank-ico" style="text-align: center;margin-top: 8px;margin-bottom: 0px;"><img class="rank_ico" src="" alt=""></p></span>
+                <span><p class="player-rank" style="text-align: center;font-size: 30px;margin-top: 0px;margin-bottom: 7px;"></p></span>
+                <span><p class="userId" style="text-align: center;font-size: 35px;margin-top: 0px;margin-bottom: 7px;"></p></span>
+                <span><p class="score" style="font-size: 30px;text-align: center;margin-top: 0px;margin-bottom: 0px;"></p></span>
+            </div>
+			<div class="error-block">
+				<span><p class="error-text" style="font-size: 40px;text-align: center;margin-top: 0px;margin-bottom: 0px;"></p></span>
+			</div>
+			<div class="invite-block">
+				<span style="text-align: center;"><p class="invite-text" style="font-size: 40px;text-align: center;margin-top: 0px;margin-bottom: 0px;"></p>Get your own tank<br>and FIGHT!</span>
+			</div>
+        </div>
+        <canvas id="canvas" class="obj"></canvas>
+    </div>
+    <canvas id="test" class="obj" style="margin-top: 150px;"></canvas>
+
+    <script type="module" src="js/Main.js"></script>
+</body>
+</html>

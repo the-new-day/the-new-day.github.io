@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<user>
+	<callsign>New.Day</callsign>
+	<rank>Generalissimo</rank>
+	<rankId>30</rankId>
+	<scores>1848360</scores>
+	<position>1408</position>
+	<tank>
+		<turret>https://s.pro-tanki.com/0/14/316/253/2/</turret>
+		<hull>https://s.pro-tanki.com/0/0/120/247/1/</hull>
+		<coloring>https://s.pro-tanki.com/0/5/115/231/1/</coloring>
+	</tank>
+</user>
