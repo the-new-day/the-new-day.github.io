@@ -77,7 +77,6 @@ function showPopup() {
 
 function clickOnPopupToClose(e) {
 	let target = e.target || e.srcElement;
-	//console.log(target);
 	let classesToClick = [
 		'image-popup',
 		'image-popup-cross',
@@ -94,8 +93,6 @@ function clickOnPopupToClose(e) {
 	if (classesToClick.includes(target.className)) {
 		hidePopup();
 	}
-
-	// TODO: cleanup this code
 }
 
 var popup = document.getElementsByClassName('image-popup')[0];
