@@ -1,0 +1,26 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rgb(176, 176, 176);
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+a, a:visited {
+    text-decoration: none;
+    font-weight: 600;
+    color: rgb(58, 117, 117);
+}
+
+.main-header {
+    font-size: 22px;
+    text-align: center;
+}
+
+#content {
+    width: 780px;
+    margin: auto;
+}
