@@ -1,75 +1,63 @@
-/**
- * Вычисление ширины (props_x) и длины (props_y) на основе static-geometry/prop/position
- * Формула: diff / 500.0 + 1, затем Math.ceil
- */
 function calculateWidthAndLength(staticGeomElement) {
     if (!staticGeomElement) return null;
-    
-    // все prop внутри static-geometry
+
     const props = staticGeomElement.querySelectorAll('prop');
     if (props.length === 0) return null;
 
     const allX = [];
     const allY = [];
-    
+
     for (const prop of props) {
         const position = prop.querySelector('position');
         if (!position) continue;
-        
+
         const xElem = position.querySelector('x');
         const yElem = position.querySelector('y');
         if (!xElem || !yElem) continue;
-        
+
         const x = parseFloat(xElem.textContent);
         const y = parseFloat(yElem.textContent);
         if (isNaN(x) || isNaN(y)) continue;
-        
+
         allX.push(x);
         allY.push(y);
     }
-    
+
     if (allX.length === 0) return null;
-    
+
     const minX = Math.min(...allX);
     const maxX = Math.max(...allX);
     const minY = Math.min(...allY);
     const maxY = Math.max(...allY);
-    
+
     const diffX = maxX - minX;
     const diffY = maxY - minY;
-    
+
     const propsX = diffX / 500.0 + 1;
     const propsY = diffY / 500.0 + 1;
-    
+
     return { props_x: Math.ceil(propsX), props_y: Math.ceil(propsY) };
 }
 
-/**
- * Вычисление высоты (props_z) на основе collision-geometry
- * Анализирует collision-box, collision-plane, collision-triangle
- * Формула: diff_z / 500.0 -> ceil
- */
 function calculateHeight(collisionGeomElement) {
     if (!collisionGeomElement) return null;
-    
+
     const allZ = [];
-    
-    // collision-box
+
     const boxes = collisionGeomElement.querySelectorAll('collision-box');
     for (const box of boxes) {
         const position = box.querySelector('position');
         const size = box.querySelector('size');
         if (!position || !size) continue;
-        
+
         const posZ = parseFloat(position.querySelector('z')?.textContent);
         const sizeZ = parseFloat(size.querySelector('z')?.textContent);
         if (isNaN(posZ) || isNaN(sizeZ)) continue;
-        
+
         allZ.push(posZ);
         allZ.push(posZ + sizeZ);
     }
-    
-    // collision-plane
+
     const planes = collisionGeomElement.querySelectorAll('collision-plane');
     for (const plane of planes) {
         const position = plane.querySelector('position');
@@ -77,8 +65,7 @@ function calculateHeight(collisionGeomElement) {
         const posZ = parseFloat(position.querySelector('z')?.textContent);
         if (!isNaN(posZ)) allZ.push(posZ);
     }
-    
-    // collision-triangle
+
     const triangles = collisionGeomElement.querySelectorAll('collision-triangle');
     for (const tri of triangles) {
         const position = tri.querySelector('position');
@@ -86,22 +73,22 @@ function calculateHeight(collisionGeomElement) {
         const v1 = tri.querySelector('v1');
         const v2 = tri.querySelector('v2');
         if (!position || !v0 || !v1 || !v2) continue;
-        
+
         const posZ = parseFloat(position.querySelector('z')?.textContent);
         const v0z = parseFloat(v0.querySelector('z')?.textContent);
         const v1z = parseFloat(v1.querySelector('z')?.textContent);
         const v2z = parseFloat(v2.querySelector('z')?.textContent);
-        
+
         if (isNaN(posZ) || isNaN(v0z) || isNaN(v1z) || isNaN(v2z)) continue;
-        
+
         allZ.push(posZ);
         allZ.push(posZ + v0z);
         allZ.push(posZ + v1z);
         allZ.push(posZ + v2z);
     }
-    
+
     if (allZ.length === 0) return null;
-    
+
     const minZ = Math.min(...allZ);
     const maxZ = Math.max(...allZ);
     const diffZ = maxZ - minZ;
@@ -109,27 +96,24 @@ function calculateHeight(collisionGeomElement) {
     return Math.ceil(propsZ);
 }
 
-/**
- * Основная функция расчета габаритов (аналог calculate_dimensions)
- */
 function calculateDimensions(xmlDoc, filename) {
     const root = xmlDoc.documentElement;
     if (!root) return null;
-    
+
     const staticGeom = root.querySelector('static-geometry');
     const collisionGeom = root.querySelector('collision-geometry');
-    
+
     if (!staticGeom || !collisionGeom) {
         console.warn("Missing static-geometry or collision-geometry");
         return null;
     }
-    
+
     const wh = calculateWidthAndLength(staticGeom);
     if (!wh) return null;
-    
+
     const heightVal = calculateHeight(collisionGeom);
     if (heightVal === null) return null;
-    
+
     return {
         filename: filename,
         props_x: wh.props_x,
@@ -138,24 +122,19 @@ function calculateDimensions(xmlDoc, filename) {
     };
 }
 
-/**
- * Анализ bonus-regions: фильтрация по game-mode (targetGameMode)
- * Возвращает объект с counts и total
- */
 function analyzeBonusRegions(xmlDoc, targetGameMode, filename) {
     const root = xmlDoc.documentElement;
     if (!root) return null;
-    
+
     const bonusRegions = root.querySelectorAll('bonus-region');
     if (bonusRegions.length === 0) return null;
-    
+
     const bonusTypes = [];
-    
+
     for (const region of bonusRegions) {
         const gameModes = region.querySelectorAll('game-mode');
         if (gameModes.length === 0) continue;
-        
-        // проверяем, есть ли среди game-mode текстов целевой режим
+
         let modeMatch = false;
         for (const gm of gameModes) {
             const modeText = gm.textContent?.trim();
@@ -165,23 +144,23 @@ function analyzeBonusRegions(xmlDoc, targetGameMode, filename) {
             }
         }
         if (!modeMatch) continue;
-        
+
         const bonusTypeElem = region.querySelector('bonus-type');
         if (bonusTypeElem && bonusTypeElem.textContent) {
             const bonusType = bonusTypeElem.textContent.trim();
             if (bonusType) bonusTypes.push(bonusType);
         }
     }
-    
+
     if (bonusTypes.length === 0) {
         return { filename, bonus_counts: {}, total: 0 };
     }
-    
+
     const counts = {};
     for (const bt of bonusTypes) {
         counts[bt] = (counts[bt] || 0) + 1;
     }
-    
+
     return {
         filename: filename,
         bonus_counts: counts,
@@ -189,64 +168,61 @@ function analyzeBonusRegions(xmlDoc, targetGameMode, filename) {
     };
 }
 
-// ---------- Функция отрисовки результатов ----------
 function renderResults(dimResult, bonusResult, gameModeUsed, fileName) {
     const resultDiv = document.getElementById('resultArea');
     if (!resultDiv) return;
-    
+
     let html = '';
-    
-    // Блок габаритов
+
     if (dimResult && dimResult.props_x !== undefined) {
         html += `
             <div class="card">
-                <h3>📏 Геометрические размеры карты</h3>
+                <h3>Geometric map sizes</h3>
                 <div class="dimensions-grid">
                     <div class="dim-item">
-                        <div class="dim-label">Ширина (X)</div>
+                        <div class="dim-label">Width (X)</div>
                         <div class="dim-value">${dimResult.props_x}</div>
                     </div>
                     <div class="dim-item">
-                        <div class="dim-label">Длина (Y)</div>
+                        <div class="dim-label">Length (Y)</div>
                         <div class="dim-value">${dimResult.props_y}</div>
                     </div>
                     <div class="dim-item">
-                        <div class="dim-label">Высота (Z)</div>
+                        <div class="dim-label">Height (Z)</div>
                         <div class="dim-value">${dimResult.props_z}</div>
                     </div>
                 </div>
                 <div style="font-size:0.75rem; color:#7c9bc2; margin-top:0.8rem;">
-                    📐 Формула: (max-min)/500 + 1 для X/Y; (max-min)/500 для Z, округление вверх
+                    Formula: (max-min)/500 + 1 for X/Y; (max-min)/500 for Z, round up
                 </div>
             </div>
         `;
     } else {
         html += `
             <div class="card">
-                <h3>⚠️ Геометрия</h3>
+                <h3>Geometry</h3>
                 <div class="error-message">
-                    Не удалось вычислить габариты. Убедитесь, что в XML присутствуют теги 
-                    &lt;static-geometry&gt; с &lt;prop&gt;&lt;position&gt; и &lt;collision-geometry&gt; с collision-элементами.
+                    Failed to calculate sizes. XML must contain tags
+                    &lt;static-geometry&gt; с &lt;prop&gt;&lt;position&gt; и &lt;collision-geometry&gt; with collision-elements.
                 </div>
             </div>
         `;
     }
-    
-    // Блок бонусных регионов
+
     if (bonusResult) {
         const bonusCounts = bonusResult.bonus_counts;
         const totalBonuses = bonusResult.total;
         const hasBonuses = Object.keys(bonusCounts).length > 0;
-        
+
         html += `<div class="card">
-                    <h3>🎁 Бонус-регионы <span class="badge-total">режим: ${gameModeUsed}</span>
-                    ${totalBonuses > 0 ? `<span class="badge-total">всего: ${totalBonuses}</span>` : ''}
+                    <h3>Bonus regions <span class="badge-total">mode: ${gameModeUsed}</span>
+                    ${totalBonuses > 0 ? `<span class="badge-total">Total: ${totalBonuses}</span>` : ''}
                     </h3>`;
         if (hasBonuses) {
             html += `
                 <table class="bonus-table">
                     <thead>
-                        <tr><th>Тип бонуса</th><th>Количество</th></tr>
+                        <tr><th>Bonus type</th><th>Amount</th></tr>
                     </thead>
                     <tbody>
             `;
@@ -256,27 +232,25 @@ function renderResults(dimResult, bonusResult, gameModeUsed, fileName) {
             }
             html += `</tbody></table>`;
         } else {
-            html += `<div class="empty-state" style="padding:1rem; text-align:left;">✨ Нет бонус-регионов для выбранного режима (${gameModeUsed}) или в XML отсутствуют подходящие &lt;bonus-region&gt;.</div>`;
+            html += `<div class="empty-state" style="padding:1rem; text-align:left;">No bonus regions for mode (${gameModeUsed})</div>`;
         }
         html += `</div>`;
     } else {
         html += `
             <div class="card">
-                <h3>🎁 Бонус-регионы</h3>
-                <div class="empty-state">Не найдено ни одного тега &lt;bonus-region&gt; в XML файле.</div>
+                <h3>Bonus regions</h3>
+                <div class="empty-state">Not &lt;bonus-region&gt; tags found in the XML file.</div>
             </div>
         `;
     }
-    
-    // Дополнительная информация о файле
+
     html += `<div style="font-size:0.7rem; background:#07121c; border-radius:1rem; padding:0.5rem 1rem; color:#6082a0;">
-                📄 Файл: ${escapeHtml(fileName)} | Анализ завершён
+                File: ${escapeHtml(fileName)} | Calculation finished
             </div>`;
-    
+
     resultDiv.innerHTML = html;
 }
 
-// helper для экранирования
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/[&<>]/g, function(m) {
@@ -289,104 +263,98 @@ function escapeHtml(str) {
     });
 }
 
-// главная функция обработки загруженного XML файла
 async function processXMLFile(file, gameMode) {
     if (!file) {
-        showError("Файл не выбран");
+        showError("No file selected");
         return;
     }
-    
+
     if (!file.name.toLowerCase().endsWith('.xml')) {
-        showError("Пожалуйста, загрузите XML файл (расширение .xml)");
+        showError("Upload .xml file pls");
         return;
     }
-    
+
     try {
         const text = await file.text();
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "text/xml");
-        
-        // проверка ошибок парсинга
+
         const parseError = xmlDoc.querySelector('parsererror');
         if (parseError) {
-            showError("Ошибка парсинга XML: " + parseError.textContent);
+            showError("XML parsing error: " + parseError.textContent);
             return;
         }
-        
+
         const filename = file.name;
-        
-        // 1. Габариты
+
         const dimResult = calculateDimensions(xmlDoc, filename);
-        // 2. Бонусные регионы
+
         const bonusResult = analyzeBonusRegions(xmlDoc, gameMode, filename);
-        
-        // Отображаем результат
+
         renderResults(dimResult, bonusResult, gameMode, filename);
-        
+
     } catch (err) {
         console.error(err);
-        showError("Не удалось прочитать файл: " + err.message);
+        showError("Failed to read the file: " + err.message);
     }
 }
 
 function showError(msg) {
     const resultDiv = document.getElementById('resultArea');
     if (resultDiv) {
-        resultDiv.innerHTML = `<div class="error-message" style="margin:1rem;">❌ ${escapeHtml(msg)}</div>`;
+        resultDiv.innerHTML = `<div class="error-message" style="margin:1rem;">${escapeHtml(msg)}</div>`;
     } else {
         alert(msg);
     }
 }
 
-// ------ Инициализация UI и обработчики ------
 document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const analyzeBtn = document.getElementById('analyzeBtn');
     const fileNameSpan = document.getElementById('fileNameDisplay');
     const gameModeSelect = document.getElementById('gameMode');
-    
+
     let selectedFile = null;
-    
+
     fileInput.addEventListener('change', (e) => {
         if (fileInput.files && fileInput.files.length > 0) {
             selectedFile = fileInput.files[0];
             fileNameSpan.textContent = selectedFile.name;
             analyzeBtn.disabled = false;
-            // очистить старые результаты при новом файле
+
             const resultDiv = document.getElementById('resultArea');
             if (resultDiv && !resultDiv.innerHTML.includes("Ожидание загрузки")) {
-                resultDiv.innerHTML = `<div class="empty-state">📁 Новый файл: "${escapeHtml(selectedFile.name)}". Нажмите «Анализировать».</div>`;
+                resultDiv.innerHTML = `<div class="empty-state">New file: "${escapeHtml(selectedFile.name)}". Press "Calculate"</div>`;
             }
         } else {
             selectedFile = null;
-            fileNameSpan.textContent = "Файл не выбран";
+            fileNameSpan.textContent = "No file selected";
             analyzeBtn.disabled = true;
         }
     });
-    
+
     analyzeBtn.addEventListener('click', async () => {
         if (!selectedFile) {
-            showError("Сначала выберите XML файл.");
+            showError("Select XML file first.");
             return;
         }
-        
+
         const currentGameMode = gameModeSelect.value;
-        // Блокируем кнопку на время анализа (чтобы избежать повторных кликов)
+
         analyzeBtn.disabled = true;
         const originalText = analyzeBtn.innerHTML;
-        analyzeBtn.innerHTML = "⏳ Анализ...";
-        
+        analyzeBtn.innerHTML = "Calculation...";
+
         try {
             await processXMLFile(selectedFile, currentGameMode);
         } catch (err) {
-            showError("Ошибка: " + err.message);
+            showError("Error: " + err.message);
         } finally {
             analyzeBtn.disabled = false;
             analyzeBtn.innerHTML = originalText;
         }
     });
-    
-    // Можно также разрешить drag and drop? (опционально, но для удобства добавим базовый)
+
     const container = document.querySelector('.container');
     const preventDefaults = (e) => {
         e.preventDefault();
@@ -395,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         document.body.addEventListener(eventName, preventDefaults, false);
     });
-    
+
     const dropZone = document.querySelector('.upload-area');
     dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -413,18 +381,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const droppedFile = files[0];
             if (droppedFile.name.toLowerCase().endsWith('.xml')) {
                 fileInput.files = dt.files;
-                // вручную триггерим событие
+
                 const changeEvent = new Event('change', { bubbles: true });
                 fileInput.dispatchEvent(changeEvent);
             } else {
-                showError("Пожалуйста, перетащите XML файл.");
+                showError("Please drag and drop XML file.");
             }
         }
     });
-    
-    // изначально показать подсказку
+
     const resultDiv = document.getElementById('resultArea');
-    if (resultDiv && resultDiv.innerHTML.includes("Ожидание загрузки")) {
-        // сохраняем приветствие
+    if (resultDiv && resultDiv.innerHTML.includes("Awaiting for the upload...")) {
+
     }
 });
