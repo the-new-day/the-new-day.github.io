@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ XML карты (Static Geometry & Bonus Regions)</title>
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📐 Картограф: XML Analyzer</h1>
+        <p>Загрузите один XML файл (map layout) → получите габариты (Width, Length, Height) и статистику бонус-регионов</p>
+    </div>
+    <div class="upload-area">
+        <div class="file-input-wrapper">
+            <label class="file-label" for="fileInput">
+                📂 Выбрать XML файл
+            </label>
+            <input type="file" id="fileInput" accept=".xml">
+            <span id="fileNameDisplay" class="file-name">Файл не выбран</span>
+            <button id="analyzeBtn" class="analyze-btn" disabled>🔍 Анализировать</button>
+        </div>
+        <div class="mode-selector">
+            <label>🎮 Режим игры для бонусов:</label>
+            <select id="gameMode">
+                <option value="dm">Deathmatch (DM)</option>
+                <option value="tdm">Team Deathmatch (TDM)</option>
+                <option value="ctf">Capture The Flag (CTF)</option>
+            </select>
+            <span style="font-size: 0.75rem; color:#7f98b0;">*фильтрация bonus-region по game-mode</span>
+        </div>
+    </div>
+
+    <div class="result-area" id="resultArea">
+        <div class="empty-state">
+            ⚡ Ожидание загрузки XML файла. Нажмите «Анализировать», чтобы получить данные.
+        </div>
+    </div>
+    <footer>
+        Анализ static-geometry (ширина/длина) и collision-geometry (высота) + бонус-регионы
+    </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
