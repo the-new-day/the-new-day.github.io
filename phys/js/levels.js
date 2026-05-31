@@ -140,8 +140,8 @@ const LEVELS = [
   {
     name:"Breach",
     ambient:-10,
-    timer:50, need:0.60,
-    heaters:[ rect(40,18,16,4, 260), rect(26,30,4,12, 260) ],
+    timer:50, need:0.10,
+    heaters:[ rect(40,18,16,4, 100), rect(26,30,4,12, 100) ],
     walls:[ rect(40,42,16,4) ],                                    // bottom only
     ice:  rect(40,30,16,12),
     tools:[
