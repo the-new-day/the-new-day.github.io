@@ -145,10 +145,14 @@ function analyzeBonusRegions(xmlDoc, targetGameMode, filename) {
         }
         if (!modeMatch) continue;
 
-        const bonusTypeElem = region.querySelector('bonus-type');
-        if (bonusTypeElem && bonusTypeElem.textContent) {
-            const bonusType = bonusTypeElem.textContent.trim();
-            if (bonusType) bonusTypes.push(bonusType);
+        const bonusTypeElems = region.querySelectorAll('bonus-type');
+        for (const bonusTypeElem of bonusTypeElems) {
+            if (bonusTypeElem.textContent) {
+                const bonusType = bonusTypeElem.textContent.trim();
+                if (bonusType) {
+                    bonusTypes.push(bonusType);
+                }
+            }
         }
     }
 
