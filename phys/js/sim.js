@@ -28,6 +28,7 @@ const simState = {
   speed: 1,
   hSolidMax: 0,
   hLiquidMin: 0,
+  meltedAt: null,
 };
 
 const idx = (x, y) => y * W + x;
@@ -163,20 +164,28 @@ function rasterLine(x0, y0, x1, y1){
   return cells;
 }
 
+function objectHalfCells(){
+  const raw = simState.objectSize * W / (2 * LX);
+  const nearest = Math.round(raw * 2) / 2;
+  return Math.abs(raw - nearest) < 1e-3 ? nearest : raw;
+}
+
 function buildObjectMask(){
   objectMask.fill(0);
-  const half = simState.objectSize / 2;
+  const hc = objectHalfCells();
+  const hc2 = hc * hc;
+  const ocx = Math.round(simState.objectCenter.x * W / LX - 0.5);
+  const ocy = Math.round(simState.objectCenter.y * H / LY - 0.5);
+
   for(let y = 0; y < H; y++){
-    const cy = cellCenterY(y);
     for(let x = 0; x < W; x++){
-      const cx = cellCenterX(x);
       const i = idx(x, y);
       if(obstacleMask[i] !== CELL_EMPTY) continue;
-
+      const dx = x - ocx;
+      const dy = y - ocy;
       const inside = simState.objectShape === "square"
-        ? Math.abs(cx - simState.objectCenter.x) <= half && Math.abs(cy - simState.objectCenter.y) <= half
-        : (cx - simState.objectCenter.x) ** 2 + (cy - simState.objectCenter.y) ** 2 <= half ** 2;
-
+        ? Math.abs(dx) <= hc + 1e-9 && Math.abs(dy) <= hc + 1e-9
+        : dx * dx + dy * dy <= hc2 + 1e-9;
       if(inside) objectMask[i] = 1;
     }
   }
@@ -244,6 +253,7 @@ function resetSimulation(){
   simState.elapsed = 0;
   simState.timeHistory = [];
   simState.massHistory = [];
+  simState.meltedAt = null;
   updateThermoFields();
   simState.initialMass = Math.max(currentMass(), 1e-12);
   pushHistory();
@@ -308,16 +318,24 @@ function clearScene(){
 }
 
 function addSourceAtCell(x, y){
-  simState.sources.push({ x: cellCenterX(x), y: cellCenterY(y), weight: 1.0 });
+  const cx = cellCenterX(x);
+  const cy = cellCenterY(y);
+  const existingIdx = simState.sources.findIndex(
+    s => Math.abs(s.x - cx) < DX * 0.5 && Math.abs(s.y - cy) < DX * 0.5
+  );
+  if(existingIdx >= 0){
+    simState.sources.splice(existingIdx, 1);
+  } else {
+    simState.sources.push({ x: cx, y: cy, weight: 1.0 });
+  }
   calculateSources();
 }
 
 function moveObjectToCell(x, y){
-  const half = simState.objectSize / 2;
-  simState.objectCenter = {
-    x: clamp(cellCenterX(x), half, LX - half),
-    y: clamp(cellCenterY(y), half, LY - half),
-  };
+  const marginCells = Math.ceil((simState.objectSize / 2) / DX);
+  const cx = clamp(x, marginCells, W - 1 - marginCells);
+  const cy = clamp(y, marginCells, H - 1 - marginCells);
+  simState.objectCenter = { x: cellCenterX(cx), y: cellCenterY(cy) };
   resetSimulation();
 }
 
@@ -348,107 +366,89 @@ function paintObstacle(cx, cy, type){
   }
 }
 
-function sourceCells(){
-  return simState.sources.map(source => ({
-    x: clamp(Math.floor(source.x / DX), 0, W - 1),
-    y: clamp(Math.floor(source.y / DY), 0, H - 1),
-  }));
+function computeBgTemperature(){
+  const m = simState.material;
+  const n = W * H;
+  const kbg = new Float32Array(n);
+  const rcbg = new Float32Array(n);
+  for(let i = 0; i < n; i++){
+    if(obstacleMask[i] === CELL_INSULATOR){
+      kbg[i] = INSULATOR_MATERIAL.k;
+      rcbg[i] = INSULATOR_MATERIAL.rho * INSULATOR_MATERIAL.cp;
+    } else {
+      kbg[i] = m.kLiquid;
+      rcbg[i] = m.rho * m.cp;
+    }
+  }
+  const alphaMax = m.kLiquid / (m.rho * m.cp);
+  const dt = 0.45 * DX * DX / (4.0 * alphaMax);
+  const Tbg = new Float32Array(n);
+  const Tnew = new Float32Array(n);
+  for(let iter = 0; iter < 500; iter++){
+    for(let y = 1; y < H - 1; y++){
+      for(let x = 1; x < W - 1; x++){
+        const i = idx(x, y);
+        if(obstacleMask[i] === CELL_COOLER){ Tnew[i] = -20; continue; }
+        const T_here = Tbg[i];
+        const ki = kbg[i];
+        const fluxR = harmonicMean(ki, kbg[i + 1]) * (Tbg[i + 1] - T_here) / (DX * DX);
+        const fluxL = harmonicMean(ki, kbg[i - 1]) * (T_here - Tbg[i - 1]) / (DX * DX);
+        const fluxU = harmonicMean(ki, kbg[i + W]) * (Tbg[i + W] - T_here) / (DY * DY);
+        const fluxD = harmonicMean(ki, kbg[i - W]) * (T_here - Tbg[i - W]) / (DY * DY);
+        Tnew[i] = T_here + (dt / rcbg[i]) * (fluxR - fluxL + fluxU - fluxD + sourceField[i]);
+      }
+    }
+    for(let x = 0; x < W; x++){
+      Tnew[idx(x, 0)] = Tnew[idx(x, 1)];
+      Tnew[idx(x, H - 1)] = Tnew[idx(x, H - 2)];
+    }
+    for(let y = 0; y < H; y++){
+      Tnew[idx(0, y)] = Tnew[idx(1, y)];
+      Tnew[idx(W - 1, y)] = Tnew[idx(W - 2, y)];
+    }
+    Tbg.set(Tnew);
+  }
+  return Tbg;
 }
 
 function findOptimalPosition(){
-  if(simState.sources.length === 0 && !obstacleMask.some(value => value === CELL_COOLER)){
+  if(simState.sources.length === 0 && !obstacleMask.some(v => v === CELL_COOLER)){
     return simState.objectCenter;
   }
-
-  const n = W * H;
-  let thermalDist = new Float32Array(n);
-  let coolDist = new Float32Array(n);
-  let cost = new Float32Array(n);
-  thermalDist.fill(10000);
-  coolDist.fill(10000);
-  cost.fill(1);
-
-  for(let i = 0; i < n; i++){
-    if(obstacleMask[i] === CELL_INSULATOR) cost[i] = 500;
-    if(obstacleMask[i] === CELL_COOLER) cost[i] = 2;
-  }
-
-  for(const source of sourceCells()){
-    thermalDist[idx(source.x, source.y)] = 0;
-  }
-
-  let hasCooler = false;
-  for(let i = 0; i < n; i++){
-    if(obstacleMask[i] === CELL_COOLER){
-      coolDist[i] = 0;
-      hasCooler = true;
-    }
-  }
-
-  thermalDist = relaxDistance(thermalDist, cost, 150);
-  if(hasCooler) coolDist = relaxDistance(coolDist, cost, 150);
-
+  const bgT = computeBgTemperature();
   const margin = Math.ceil((simState.objectSize / 2) / DX) + 1;
-  let bestScore = -Infinity;
+  let bestScore = Infinity;
   let best = { ...simState.objectCenter };
-
   for(let cy = margin; cy < H - margin; cy++){
     for(let cx = margin; cx < W - margin; cx++){
-      const score = candidateScore(cx, cy, thermalDist, coolDist, hasCooler);
-      if(score !== null && score > bestScore){
+      const score = candidateScore(cx, cy, bgT);
+      if(score !== null && score < bestScore){
         bestScore = score;
         best = { x: cellCenterX(cx), y: cellCenterY(cy) };
       }
     }
   }
-
   return best;
 }
 
-function relaxDistance(dist, cost, iterations){
-  let next = new Float32Array(dist.length);
-
-  for(let iter = 0; iter < iterations; iter++){
-    next.set(dist);
-    for(let y = 0; y < H; y++){
-      for(let x = 0; x < W; x++){
-        const i = idx(x, y);
-        let best = dist[i];
-        if(x > 0) best = Math.min(best, dist[idx(x - 1, y)] + cost[i]);
-        if(x < W - 1) best = Math.min(best, dist[idx(x + 1, y)] + cost[i]);
-        if(y > 0) best = Math.min(best, dist[idx(x, y - 1)] + cost[i]);
-        if(y < H - 1) best = Math.min(best, dist[idx(x, y + 1)] + cost[i]);
-        next[i] = Math.min(next[i], best);
-      }
-    }
-    const swap = dist;
-    dist = next;
-    next = swap;
-  }
-
-  return dist;
-}
-
-function candidateScore(cx, cy, thermalDist, coolDist, hasCooler){
-  const half = simState.objectSize / 2;
-  let score = 0;
+function candidateScore(cx, cy, bgT){
+  const hc = objectHalfCells();
+  const hc2 = hc * hc;
+  let sum = 0;
   let count = 0;
-
   for(let y = 0; y < H; y++){
-    const py = cellCenterY(y);
     for(let x = 0; x < W; x++){
-      const px = cellCenterX(x);
+      const dx = x - cx;
+      const dy = y - cy;
       const inside = simState.objectShape === "square"
-        ? Math.abs(px - cellCenterX(cx)) <= half && Math.abs(py - cellCenterY(cy)) <= half
-        : (px - cellCenterX(cx)) ** 2 + (py - cellCenterY(cy)) ** 2 <= half ** 2;
-
+        ? Math.abs(dx) <= hc + 1e-9 && Math.abs(dy) <= hc + 1e-9
+        : dx * dx + dy * dy <= hc2 + 1e-9;
       if(!inside) continue;
       const i = idx(x, y);
       if(obstacleMask[i] === CELL_INSULATOR) return null;
-      score += thermalDist[i] - 2 * (hasCooler ? coolDist[i] : 0);
+      sum += bgT[i];
       count++;
     }
   }
-
-  return count > 0 ? score / count : null;
+  return count > 0 ? sum / count : null;
 }

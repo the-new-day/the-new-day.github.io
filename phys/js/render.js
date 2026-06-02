@@ -10,19 +10,20 @@ graph.width = 320;
 graph.height = 230;
 const gctx = graph.getContext("2d");
 
+const HEAT_RS = 4;
 const fieldCanvas = document.createElement("canvas");
-fieldCanvas.width = W;
-fieldCanvas.height = H;
+fieldCanvas.width = W * HEAT_RS;
+fieldCanvas.height = H * HEAT_RS;
 const fctx = fieldCanvas.getContext("2d");
-const fieldImg = fctx.createImageData(W, H);
+const fieldImg = fctx.createImageData(W * HEAT_RS, H * HEAT_RS);
 
 const objectCanvas = document.createElement("canvas");
-objectCanvas.width = W;
-objectCanvas.height = H;
+objectCanvas.width = W * HEAT_RS;
+objectCanvas.height = H * HEAT_RS;
 const octx = objectCanvas.getContext("2d");
-const objectImg = octx.createImageData(W, H);
+const objectImg = octx.createImageData(W * HEAT_RS, H * HEAT_RS);
 
-let heatScale = { min: -7, max: 1000, mid: (1000-7)/2.0 };
+let heatScale = { min: -7, max: 100, mid: (100-7)/2.0 };
 
 function tempColor(temp, range = heatScale){
   const minTemp = range.min;
@@ -85,17 +86,38 @@ function render(){
 
 function drawHeatField(range){
   const data = fieldImg.data;
-  for(let i = 0; i < W * H; i++){
-    const [r, g, b] = tempColor(T[i], range);
-    const o = i * 4;
-    data[o] = r;
-    data[o + 1] = g;
-    data[o + 2] = b;
-    data[o + 3] = 255;
+  const rw = W * HEAT_RS;
+  const rh = H * HEAT_RS;
+
+  for(let py = 0; py < rh; py++){
+    for(let px = 0; px < rw; px++){
+      const tx = (px + 0.5) / HEAT_RS - 0.5;
+      const ty = (py + 0.5) / HEAT_RS - 0.5;
+      const x0 = Math.floor(tx);
+      const y0 = Math.floor(ty);
+      const fx = tx - x0;
+      const fy = ty - y0;
+      const cx0 = clamp(x0, 0, W - 1);
+      const cx1 = clamp(x0 + 1, 0, W - 1);
+      const cy0 = clamp(y0, 0, H - 1);
+      const cy1 = clamp(y0 + 1, 0, H - 1);
+      const temp =
+        T[cy0 * W + cx0] * (1 - fx) * (1 - fy) +
+        T[cy0 * W + cx1] * fx * (1 - fy) +
+        T[cy1 * W + cx0] * (1 - fx) * fy +
+        T[cy1 * W + cx1] * fx * fy;
+      const [r, g, b] = tempColor(temp, range);
+      const o = (py * rw + px) * 4;
+      data[o] = r;
+      data[o + 1] = g;
+      data[o + 2] = b;
+      data[o + 3] = 255;
+    }
   }
 
   fctx.putImageData(fieldImg, 0, 0);
   ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
   ctx.drawImage(fieldCanvas, 0, 0, cv.width, cv.height);
 }
 
@@ -112,20 +134,49 @@ function updateTemperatureLegend(range){
 
 function drawObject(){
   const data = objectImg.data;
-  for(let i = 0; i < W * H; i++){
-    const solid = objectMask[i] ? 1 - liquidFraction[i] : 0;
-    const o = i * 4;
-    if(solid > 0.01){
+  const rw = W * HEAT_RS;
+  const rh = H * HEAT_RS;
+  const hc = objectHalfCells();
+  const visHC = Math.floor(hc + 1e-9) + 0.5;
+  const ocx = Math.round(simState.objectCenter.x * W / LX - 0.5);
+  const ocy = Math.round(simState.objectCenter.y * H / LY - 0.5);
+
+  for(let py = 0; py < rh; py++){
+    for(let px = 0; px < rw; px++){
+      const tx = (px + 0.5) / HEAT_RS - 0.5;
+      const ty = (py + 0.5) / HEAT_RS - 0.5;
+      const ddx = tx - ocx;
+      const ddy = ty - ocy;
+
+      let cov;
+      if(simState.objectShape === "square"){
+        cov = clamp(visHC - Math.abs(ddx), 0, 1) *
+              clamp(visHC - Math.abs(ddy), 0, 1);
+      } else {
+        cov = clamp(visHC - Math.sqrt(ddx * ddx + ddy * ddy), 0, 1);
+      }
+
+      const o = (py * rw + px) * 4;
+      if(cov < 0.004){
+        data[o + 3] = 0;
+        continue;
+      }
+
+      const ix = clamp(Math.round(tx), 0, W - 1);
+      const iy = clamp(Math.round(ty), 0, H - 1);
+      const i = iy * W + ix;
+      const solid = objectMask[i] ? 1 - liquidFraction[i] : 0;
+      if(solid < 0.01){ data[o + 3] = 0; continue; }
       data[o] = 215;
       data[o + 1] = 246;
       data[o + 2] = 255;
-      data[o + 3] = Math.round(45 + solid * 205);
-    } else {
-      data[o + 3] = 0;
+      data[o + 3] = Math.round(cov * (50 + solid * 200));
     }
   }
 
   octx.putImageData(objectImg, 0, 0);
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
   ctx.drawImage(objectCanvas, 0, 0, cv.width, cv.height);
 }
 
@@ -255,4 +306,21 @@ function drawMassGraph(){
     else gctx.lineTo(x, y);
   }
   gctx.stroke();
+
+  if(simState.meltedAt !== null){
+    const mx = padL + (simState.meltedAt / maxTime) * plotW;
+    gctx.strokeStyle = "rgba(255, 200, 80, 0.85)";
+    gctx.lineWidth = 1.5;
+    gctx.setLineDash([4, 4]);
+    gctx.beginPath();
+    gctx.moveTo(mx, padT);
+    gctx.lineTo(mx, padT + plotH);
+    gctx.stroke();
+    gctx.setLineDash([]);
+    gctx.fillStyle = "#ffc850";
+    gctx.font = "11px system-ui, sans-serif";
+    gctx.textAlign = "center";
+    gctx.textBaseline = "top";
+    gctx.fillText(`${simState.meltedAt.toFixed(0)} c`, mx, padT + 2);
+  }
 }
