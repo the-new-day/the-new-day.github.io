@@ -1,0 +1,642 @@
+{
+  "hulls": {
+    "dictator": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "hornet": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "hornet_xt": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "hunter": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "mammoth": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "titan": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "viking": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "viking_xt": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "wasp": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "wasp_xt": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    }
+  },
+  "turrets": {
+    "flamethrower": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "flamethrower_xt": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "freeze": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "isida": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "machinegun": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "railgun": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "railgun_xt": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "ricochet": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "shaft": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "shotgun": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "smoky": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "thunder": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "thunder_xt": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    },
+    "twins": {
+      "m0": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m0"
+      },
+      "m1": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m1"
+      },
+      "m2": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m2"
+      },
+      "m3": {
+        "model": "object.3ds",
+        "lightmap": "lightmap.jpg",
+        "details": "details.png",
+        "dir": "m3"
+      }
+    }
+  },
+  "paints": [
+    "Blue.jpg",
+    "Carbon.jpg",
+    "Desert.jpg",
+    "Digital.jpg",
+    "Emerald.jpg",
+    "Green.jpg",
+    "Lava.jpg",
+    "Red.jpg",
+    "Tiger.jpg",
+    "Zeus.jpg"
+  ]
+}
